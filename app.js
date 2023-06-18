@@ -13,6 +13,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(adminRoutes);
 app.use(shopRoutes);
 
+app.use('/', (req, res, next) => {
+  // .send() must be last
+  res.status(404).send('<h1>Page Not Found!</h1>');
+});
+
 const port = 3000;
 // app.listen does 2 things, createServer and listen
 app.listen(port);
