@@ -1,5 +1,5 @@
 const http = require('http');
-const { requestHandler } = require('./routes');
+const { requestHandler } = require('./vanillaNodeJsRoutes/routes');
 
 const server = http.createServer(requestHandler);
 
