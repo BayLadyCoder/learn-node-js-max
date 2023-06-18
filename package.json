@@ -1,0 +1,23 @@
+{
+  "name": "learn-node-js-max",
+  "description": "",
+  "version": "1.0.0",
+  "main": "app.js",
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BayLadyCoder/learn-node-js-max.git"
+  },
+  "author": "Bay Chairangsaris",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BayLadyCoder/learn-node-js-max/issues"
+  },
+  "homepage": "https://github.com/BayLadyCoder/learn-node-js-max#readme"
+}
