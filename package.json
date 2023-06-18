@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/BayLadyCoder/learn-node-js-max/issues"
   },
-  "homepage": "https://github.com/BayLadyCoder/learn-node-js-max#readme"
+  "homepage": "https://github.com/BayLadyCoder/learn-node-js-max#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
