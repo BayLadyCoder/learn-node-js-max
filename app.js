@@ -12,6 +12,9 @@ const app = express();
 // available under the req.body property
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// serves static files
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
