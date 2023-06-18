@@ -1,7 +1,3 @@
-const http = require('http');
-
-const { requestHandler } = require('./vanillaNodeJsRoutes/routes');
-
 const express = require('express');
 
 const app = express();
@@ -20,6 +16,5 @@ app.use((req, res, next) => {
 });
 
 const port = 3000;
-
 // app.listen does 2 things, createServer and listen
 app.listen(port);
