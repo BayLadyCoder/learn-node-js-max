@@ -12,7 +12,7 @@ const app = express();
 // available under the req.body property
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// serves static files
+// serves static files such as css, image, js files that we allow users to access them in the frontend
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/admin', adminRoutes);
