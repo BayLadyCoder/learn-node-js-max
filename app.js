@@ -1,10 +1,14 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
 
+// Parse incoming request bodies in a middleware before your handlers,
+// available under the req.body property
+app.use(bodyParser.urlencoded({ extended: true }));
+
 // use middleware
 app.use('/add-product', (req, res, next) => {
-  console.log('hello from 2nd middleware');
   res.send(
     '<form action="/product" method="POST"><input type="text" name="title" /><button type="submit">Submit</button></form>'
   );
@@ -19,7 +23,6 @@ app.use('/product', (req, res, next) => {
 });
 
 app.use('/', (req, res, next) => {
-  console.log('hello from middleware');
   res.send('<h1>Hello from Express!</h1>');
 });
 
