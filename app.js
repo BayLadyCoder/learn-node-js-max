@@ -19,7 +19,7 @@ app.use((req, res, next) => {
   res.send('<h1>Hello from Express!</h1>');
 });
 
-const server = http.createServer(app);
-
 const port = 3000;
-server.listen(port);
+
+// app.listen does 2 things, createServer and listen
+app.listen(port);
