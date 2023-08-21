@@ -8,10 +8,14 @@ const adminData = require('./admin');
 router.get('/', (req, res, next) => {
   console.log('require.main.filename', require.main.filename);
   // res.sendFile(path.join(rootDir, 'views', 'shop.html'));
+  const { products } = adminData;
   res.render('shop', {
-    products: adminData.products,
+    products,
     pageTitle: 'Shop',
     path: '/',
+    hasProducts: products.length > 0,
+    activeShop: true,
+    productCSS: true,
   });
 });
 
