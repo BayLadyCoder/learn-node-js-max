@@ -8,6 +8,9 @@ const rootDir = require('./utils/path');
 
 const app = express();
 
+app.set('view engine', 'pug');
+app.set('views', 'views');
+
 // Parse incoming request bodies in a middleware before your handlers,
 // available under the req.body property
 app.use(bodyParser.urlencoded({ extended: true }));
