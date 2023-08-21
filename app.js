@@ -1,25 +1,14 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
-const expressHbs = require('express-handlebars');
 
 const adminData = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
-const rootDir = require('./utils/path');
+// const rootDir = require('./utils/path');
 
 const app = express();
 
-// first parameter's value determine the file format in /views and app.set()'s 2nd parameter
-app.engine(
-  'hbs',
-  expressHbs({
-    layoutsDir: 'views/layouts/',
-    defaultLayout: 'main-layout',
-    extname: 'hbs', // need to set this for the layout file
-  })
-);
-
-app.set('view engine', 'hbs');
+app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 // Parse incoming request bodies in a middleware before your handlers,
@@ -35,7 +24,9 @@ app.use(shopRoutes);
 app.use('/', (req, res, next) => {
   // .send() or sendFile() must be last
   // res.status(404).sendFile(path.join(rootDir, 'views', '404.html'));
-  res.render('404');
+  res
+    .status(404)
+    .render('404', { pageTitle: 'Page Not Found', path: undefined });
 });
 
 const port = 3000;
