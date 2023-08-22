@@ -11,22 +11,22 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.postAddProduct = (req, res, next) => {
-  console.log('POST /add-product', { body: req.body });
+  //   console.log('POST /add-product', { body: req.body });
   const product = new Product(req.body.title);
   product.save();
   res.redirect('/');
 };
 
 exports.getProducts = (req, res, next) => {
-  console.log('require.main.filename', require.main.filename);
-  const products = Product.fetchAll();
-
-  res.render('shop', {
-    products,
-    pageTitle: 'Shop',
-    path: '/',
-    hasProducts: products.length > 0,
-    activeShop: true,
-    productCSS: true,
+  //   console.log('require.main.filename', require.main.filename);
+  Product.fetchAll((products) => {
+    res.render('shop', {
+      products,
+      pageTitle: 'Shop',
+      path: '/',
+      hasProducts: products.length > 0,
+      activeShop: true,
+      productCSS: true,
+    });
   });
 };
