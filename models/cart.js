@@ -28,7 +28,7 @@ module.exports = class Cart {
         console.log('existingProduct', existingProduct);
         updatedProduct = { ...existingProduct };
         updatedProduct.qty = existingProduct.qty + 1;
-        cart.products[existingProductIndex] = [updatedProduct];
+        cart.products[existingProductIndex] = updatedProduct;
       } else {
         updatedProduct = { id, qty: 1 };
         cart.products.push(updatedProduct);
@@ -38,6 +38,28 @@ module.exports = class Cart {
       cart.totalPrice = cart.totalPrice + Number(productPrice);
 
       fs.writeFile(p, JSON.stringify(cart), (err) => {
+        console.log(err);
+      });
+    });
+  }
+
+  static deleteProduct(id, productPrice) {
+    // fetch the previous cart
+    fs.readFile(p, (err, fileContent) => {
+      if (err) {
+        return;
+      }
+
+      const updatedCart = { ...JSON.parse(fileContent) };
+      const product = updatedCart.products.find((product) => product.id === id);
+
+      updatedCart.products = updatedCart.products.filter(
+        (product) => product.id !== id
+      );
+      updatedCart.totalPrice =
+        updatedCart.totalPrice - productPrice * product.qty;
+
+      fs.writeFile(p, JSON.stringify(updatedCart), (err) => {
         console.log(err);
       });
     });
