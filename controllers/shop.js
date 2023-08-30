@@ -35,9 +35,26 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  res.render('shop/cart', {
-    path: '/cart',
-    pageTitle: 'Your Cart',
+  Cart.getCart((cart) => {
+    Product.fetchAll((products) => {
+      const cartProducts = [];
+      for (const product of products) {
+        const cartProductData = cart?.products.find(
+          (prod) => prod.id === product.id
+        );
+
+        if (cartProductData) {
+          cartProducts.push({ productData: product, qyt: cartProductData.qty });
+        }
+      }
+
+      console.log({ cartProducts, productData: cartProducts[0].productData });
+      res.render('shop/cart', {
+        path: '/cart',
+        pageTitle: 'Your Cart',
+        cartProducts,
+      });
+    });
   });
 };
 
