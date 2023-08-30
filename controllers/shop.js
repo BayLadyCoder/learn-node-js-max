@@ -48,7 +48,6 @@ exports.getCart = (req, res, next) => {
         }
       }
 
-      console.log({ cartProducts, productData: cartProducts[0].productData });
       res.render('shop/cart', {
         path: '/cart',
         pageTitle: 'Your Cart',
@@ -77,5 +76,16 @@ exports.getCheckout = (req, res, next) => {
   res.render('shop/checkout', {
     path: '/checkout',
     pageTitle: 'Checkout',
+  });
+};
+
+exports.postCartDeleteItem = (req, res, next) => {
+  const { productId } = req.body;
+
+  Product.findById(productId, (product) => {
+    if (product) {
+      Cart.deleteProduct(productId, product.price);
+    }
+    res.redirect('/cart');
   });
 };
