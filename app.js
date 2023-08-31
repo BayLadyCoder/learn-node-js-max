@@ -5,8 +5,15 @@ const bodyParser = require('body-parser');
 const adminRoute = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const errorController = require('./controllers/error');
+const db = require('./utils/database');
 
 const app = express();
+
+db.execute('SELECT * FROM products')
+  .then((result) => {
+    console.log(result[0], result[1]);
+  })
+  .catch((error) => console.log({ error }));
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
