@@ -28,13 +28,15 @@ exports.getEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll((products) => {
-    res.render('admin/products', {
-      products,
-      path: '/admin/products',
-      pageTitle: 'Admin Products',
-    });
-  });
+  Product.fetchAll()
+    .then(([products, fieldData]) => {
+      res.render('admin/products', {
+        products,
+        path: '/admin/products',
+        pageTitle: 'Admin Products',
+      });
+    })
+    .catch((error) => console.log(error));
 };
 
 exports.postAddProduct = (req, res, next) => {

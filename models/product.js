@@ -1,20 +1,6 @@
-const fs = require('fs');
-const path = require('path');
+const db = require('../utils/database');
 
-const rootDir = require('../utils/path');
 const Cart = require('./cart');
-
-const targetFilePath = path.join(rootDir, 'data', 'products.json');
-
-const getProductsFromFile = (callback) => {
-  fs.readFile(targetFilePath, (err, fileContent) => {
-    if (err) {
-      callback([]);
-    } else {
-      callback(JSON.parse(fileContent));
-    }
-  });
-};
 
 module.exports = class Product {
   constructor(id, title, imageUrl, description, price) {
@@ -25,54 +11,13 @@ module.exports = class Product {
     this.price = price;
   }
 
-  save() {
-    getProductsFromFile((products) => {
-      if (this.id) {
-        // update existing product
-        const existingProductIndex = products.findIndex(
-          (product) => product.id === this.id
-        );
-        const existingProduct = products[existingProductIndex];
-        const updatedProducts = [...products];
-        updatedProducts[existingProductIndex] = this;
+  save() {}
 
-        fs.writeFile(targetFilePath, JSON.stringify(updatedProducts), (err) => {
-          console.error(err);
-        });
-      } else {
-        this.id = Math.random().toString();
-        products.push(this);
-
-        fs.writeFile(targetFilePath, JSON.stringify(products), (err) => {
-          console.error(err);
-        });
-      }
-    });
+  static fetchAll() {
+    return db.execute('SELECT * FROM products');
   }
 
-  static fetchAll(callback) {
-    getProductsFromFile(callback);
-  }
+  static findById(id) {}
 
-  static findById(id, callback) {
-    return getProductsFromFile((products) => {
-      const product = products.find((product) => product.id === id);
-      callback(product);
-    });
-  }
-
-  static deleteById(id) {
-    getProductsFromFile((products) => {
-      const updatedProducts = products.filter((product) => product.id !== id);
-      const product = products.find((product) => product.id === id);
-
-      fs.writeFile(targetFilePath, JSON.stringify(updatedProducts), (err) => {
-        if (!err) {
-          Cart.deleteProduct(id, product.price);
-        } else {
-          console.error(err);
-        }
-      });
-    });
-  }
+  static deleteById(id) {}
 };
