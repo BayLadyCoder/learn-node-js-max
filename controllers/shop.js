@@ -18,13 +18,28 @@ exports.getProducts = (req, res, next) => {
 
 exports.getProduct = (req, res, next) => {
   const { productId } = req.params;
-  Product.findById(productId, (product) => {
-    res.render('shop/product-detail', {
-      product,
-      pageTitle: product?.title,
-      path: '/products',
-    });
-  });
+
+  // findAll always returns an array
+  // Product.findAll({ where: { id: productId } })
+  //   .then((products) => {
+  //     res.render('shop/product-detail', {
+  //       product: products[0],
+  //       pageTitle: products[0].title,
+  //       path: '/products',
+  //     });
+  //   })
+  //   .catch((err) => console.log(err));
+
+  // find by primary key
+  Product.findByPk(productId)
+    .then((product) => {
+      res.render('shop/product-detail', {
+        product,
+        pageTitle: product.title,
+        path: '/products',
+      });
+    })
+    .catch((err) => console.log(err));
 };
 
 exports.getIndex = (req, res, next) => {
