@@ -62,11 +62,24 @@ exports.postAddProduct = (req, res, next) => {
 
 exports.postEditProduct = (req, res, next) => {
   // updated data
-  const { id, title, imageUrl, description, price } = req.body;
+  const { id: productId, title, imageUrl, description, price } = req.body;
 
-  const updatedProduct = new Product(id, title, imageUrl, description, price);
-  updatedProduct.save();
-  res.redirect('/admin/products');
+  Product.findByPk(productId)
+    .then((product) => {
+      product.title = title;
+      product.price = price;
+      product.imageUrl = imageUrl;
+      product.description = description;
+
+      // .save() returns a promise
+      return product.save();
+    })
+    .then((result) => {
+      // instance of product
+      console.dir(result);
+      res.redirect('/admin/products');
+    })
+    .catch((err) => console.log(err));
 };
 
 exports.postDeleteProduct = (req, res, next) => {
