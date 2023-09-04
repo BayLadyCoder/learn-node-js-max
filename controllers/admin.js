@@ -11,32 +11,37 @@ exports.getAddProduct = (req, res, next) => {
 exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
   const { productId } = req.params;
-  // console.log({ query: req.query, params: req.params });
 
   if (!editMode || !productId) {
     return res.redirect('/');
   }
 
-  Product.findById(productId, (product) => {
-    res.render('admin/edit-product', {
-      pageTitle: 'Edit Product',
-      path: '/admin/edit-product',
-      editing: editMode,
-      product,
-    });
-  });
+  Product.findByPk(productId)
+    .then((product) => {
+      if (!product) {
+        return res.redirect('/');
+      }
+
+      res.render('admin/edit-product', {
+        pageTitle: 'Edit Product',
+        path: '/admin/edit-product',
+        editing: editMode,
+        product,
+      });
+    })
+    .catch((err) => console.log(err));
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
-    .then(([products, fieldData]) => {
+  Product.findAll()
+    .then((products) => {
       res.render('admin/products', {
         products,
         path: '/admin/products',
         pageTitle: 'Admin Products',
       });
     })
-    .catch((error) => console.log(error));
+    .catch((err) => console.log(err));
 };
 
 exports.postAddProduct = (req, res, next) => {
