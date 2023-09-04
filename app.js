@@ -7,6 +7,9 @@ const shopRoutes = require('./routes/shop');
 const errorController = require('./controllers/error');
 const sequelize = require('./utils/database');
 
+const Product = require('./models/product');
+const User = require('./models/user');
+
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -24,10 +27,13 @@ app.use(shopRoutes);
 
 app.use('/', errorController.get404);
 
-const port = 3000;
+// Associations/Relations
+Product.belongsTo(User, { constrains: true, onDelete: 'CASCADE' });
+User.hasMany(Product);
 
+const port = 3000;
 sequelize
-  .sync()
+  .sync({ force: true }) // force override tables with updated script, won't use in production
   .then((result) => {
     // app.listen does 2 things, createServer and listen
     app.listen(port);
