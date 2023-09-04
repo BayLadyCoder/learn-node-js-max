@@ -29,8 +29,6 @@ const port = 3000;
 sequelize
   .sync()
   .then((result) => {
-    console.log({ result });
-
     // app.listen does 2 things, createServer and listen
     app.listen(port);
   })
