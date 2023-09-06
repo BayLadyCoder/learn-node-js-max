@@ -22,6 +22,19 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // serves static files such as css, image, js files that we allow users to access them in the frontend
 app.use(express.static(path.join(__dirname, 'public')));
 
+// this runs when there is an incoming request
+// it always runs after app started,
+// so user id: 1 is guarantee to be here
+app.use((req, res, next) => {
+  User.findByPk(1)
+    .then((user) => {
+      // store user in the req(uest), so we can use it anywhere in the app conveniently
+      req.user = user;
+      next();
+    })
+    .catch((err) => console.log(err));
+});
+
 app.use('/admin', adminRoute);
 app.use(shopRoutes);
 
@@ -34,7 +47,7 @@ User.hasMany(Product);
 const port = 3000;
 sequelize
   // .sync({ force: true }) // force override tables with updated script, won't use in production
-  .sync()
+  .sync() // this is run when app started
   .then((result) => {
     // check for a non-existing user to create a dummy user since we have no UI to create a user yet
     return User.findByPk(1);
