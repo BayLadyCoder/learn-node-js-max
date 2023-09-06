@@ -47,6 +47,11 @@ exports.getProducts = (req, res, next) => {
 exports.postAddProduct = (req, res, next) => {
   const { title, imageUrl, description, price } = req.body;
 
+  // Sequelize adds special methods like
+  // depending on the association/relations we added
+  // Example, .createProduct() comes from
+  // Product.belongsTo(User, { constrains: true, onDelete: 'CASCADE' });
+  // User.hasMany(Product);
   req.user
     .createProduct({
       title,
