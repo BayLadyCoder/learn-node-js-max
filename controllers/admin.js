@@ -16,9 +16,11 @@ exports.getEditProduct = (req, res, next) => {
     return res.redirect('/');
   }
 
-  Product.findByPk(productId)
-    .then((product) => {
-      if (!product) {
+  req.user
+    .getProducts({ where: { id: productId } })
+    // Product.findByPk(productId)
+    .then((products) => {
+      if (products.length === 0) {
         return res.redirect('/');
       }
 
@@ -26,7 +28,7 @@ exports.getEditProduct = (req, res, next) => {
         pageTitle: 'Edit Product',
         path: '/admin/edit-product',
         editing: editMode,
-        product,
+        product: products[0],
       });
     })
     .catch((err) => console.log(err));
