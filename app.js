@@ -52,8 +52,8 @@ Product.belongsToMany(Cart, { through: CartItem });
 
 const port = 3000;
 sequelize
-  .sync({ force: true }) // force override tables with updated script, won't use in production
-  // .sync() // this is run when app started
+  // .sync({ force: true }) // force override tables with updated script, won't use in production
+  .sync() // this is run when app started
   .then((result) => {
     // check for a non-existing user to create a dummy user since we have no UI to create a user yet
     return User.findByPk(1);
@@ -66,8 +66,13 @@ sequelize
     return user;
   })
   .then((user) => {
-    // console.log(user);
-
+    if (!user.getCart()) {
+      // create a dummy user if there is none in database
+      return user.createCart();
+    }
+    return user.getCart();
+  })
+  .then((cart) => {
     // app.listen does 2 things, createServer and listen
     app.listen(port);
   })
