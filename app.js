@@ -75,11 +75,12 @@ sequelize
     return user;
   })
   .then((user) => {
-    if (!user.getCart()) {
-      // create a dummy user if there is none in database
-      return user.createCart();
-    }
-    return user.getCart();
+    return user.getCart().then((cart) => {
+      if (!cart) {
+        return user.createCart();
+      }
+      return cart;
+    });
   })
   .then((cart) => {
     // app.listen does 2 things, createServer and listen
