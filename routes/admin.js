@@ -10,19 +10,19 @@ const router = express.Router();
 router.get('/add-product', adminController.getAddProduct);
 
 // GET /admin/edit-product
-router.get('/edit-product/:productId', adminController.getEditProduct);
+// router.get('/edit-product/:productId', adminController.getEditProduct);
 
 // GET /admin/products
-router.get('/products', adminController.getProducts);
+// router.get('/products', adminController.getProducts);
 
 // POST /admin/add-product
 router.post('/add-product', adminController.postAddProduct);
 
 // POST /admin/edit-product
-router.post('/edit-product', adminController.postEditProduct);
+// router.post('/edit-product', adminController.postEditProduct);
 
 // POST /admin/products
-router.post('/delete-product/', adminController.postDeleteProduct);
+// router.post('/delete-product/', adminController.postDeleteProduct);
 
 // export default value
 module.exports = router;

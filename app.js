@@ -2,9 +2,9 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 
-// const adminRoute = require('./routes/admin');
+const adminRoute = require('./routes/admin');
 // const shopRoutes = require('./routes/shop');
-// const errorController = require('./controllers/error');
+const errorController = require('./controllers/error');
 
 const { mongoConnect } = require('./utils/database');
 
@@ -23,12 +23,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 // this runs when there is an incoming request
 // it always runs after app started,
 // so user id: 1 is guarantee to be here
-app.use((req, res, next) => {});
+app.use((req, res, next) => {
+  next();
+});
 
-// app.use('/admin', adminRoute);
+app.use('/admin', adminRoute);
 // app.use(shopRoutes);
 
-// app.use('/', errorController.get404);
+app.use('/', errorController.get404);
 
 mongoConnect(() => {
   app.listen(3000);

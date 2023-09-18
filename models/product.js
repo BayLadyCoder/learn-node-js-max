@@ -1,7 +1,7 @@
 const { getDb } = require('../utils/database');
 
 class Product {
-  constructor(title, price, description, imagUrl) {
+  constructor({ title, price, description, imageUrl }) {
     this.title = title;
     this.price = price;
     this.description = description;
@@ -12,9 +12,11 @@ class Product {
     return db
       .collection('products')
       .insertOne(this)
-      .then((result) =>
-        console.log({ result }).catch((err) => console.log(err))
-      );
+      .then((result) => {
+        console.log({ result });
+        return result;
+      })
+      .catch((err) => console.log(err));
   }
 }
 
