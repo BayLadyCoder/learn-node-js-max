@@ -2,10 +2,11 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const adminRoute = require('./routes/admin');
-const shopRoutes = require('./routes/shop');
-const errorController = require('./controllers/error');
-const sequelize = require('./utils/database');
+// const adminRoute = require('./routes/admin');
+// const shopRoutes = require('./routes/shop');
+// const errorController = require('./controllers/error');
+
+const { mongoConnect } = require('./utils/database');
 
 const app = express();
 
@@ -24,7 +25,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // so user id: 1 is guarantee to be here
 app.use((req, res, next) => {});
 
-app.use('/admin', adminRoute);
-app.use(shopRoutes);
+// app.use('/admin', adminRoute);
+// app.use(shopRoutes);
 
-app.use('/', errorController.get404);
+// app.use('/', errorController.get404);
+
+mongoConnect(() => {
+  app.listen(3000);
+});
