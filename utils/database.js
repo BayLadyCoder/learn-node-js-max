@@ -17,7 +17,14 @@ const mongoConnect = (callback) => {
     .catch((err) => console.log('mongodb connection error: ', err));
 };
 
-module.exports = { mongoConnect };
+const getDb = () => {
+  if (_db) {
+    return _db;
+  }
+  throw 'No database found!';
+};
+
+module.exports = { mongoConnect, getDb };
 
 // this code below is from mongodb website
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
