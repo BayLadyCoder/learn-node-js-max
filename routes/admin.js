@@ -22,7 +22,7 @@ router.post('/add-product', adminController.postAddProduct);
 router.post('/edit-product', adminController.postEditProduct);
 
 // POST /admin/products
-// router.post('/delete-product/', adminController.postDeleteProduct);
+router.post('/delete-product/', adminController.postDeleteProduct);
 
 // export default value
 module.exports = router;
