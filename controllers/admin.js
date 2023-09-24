@@ -1,3 +1,5 @@
+const { ObjectId } = require('mongodb');
+
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
@@ -61,31 +63,24 @@ exports.postAddProduct = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-// exports.postEditProduct = (req, res, next) => {
-//   // updated data
-//   const { id, title, imageUrl, description, price } = req.body;
+exports.postEditProduct = (req, res, next) => {
+  // updated data
+  const { id, title, imageUrl, description, price } = req.body;
+  const product = new Product({
+    id: new ObjectId(id),
+    title,
+    imageUrl,
+    description,
+    price,
+  });
 
-//   Product.findByPk(id)
-//     .then((product) => {
-//       if (!product) {
-//         return;
-//       }
-
-//       product.title = title;
-//       product.price = price;
-//       product.imageUrl = imageUrl;
-//       product.description = description;
-
-//       // .save() returns a promise
-//       return product.save();
-//     })
-//     .then((result) => {
-//       // result is the instance of the product
-//       // console.dir(result);
-//       res.redirect('/admin/products');
-//     })
-//     .catch((err) => console.log(err));
-// };
+  return product
+    .save()
+    .then((result) => {
+      res.redirect('/admin/products');
+    })
+    .catch((err) => console.log(err));
+};
 
 // exports.postDeleteProduct = (req, res, next) => {
 //   const { id } = req.body;
