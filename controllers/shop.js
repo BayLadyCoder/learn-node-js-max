@@ -4,7 +4,6 @@ const Product = require('../models/product');
 exports.getProducts = (req, res, next) => {
   Product.fetchAll()
     .then((products) => {
-      console.log('getProducts', { products });
       res.render('shop/product-list', {
         products,
         pageTitle: 'All Products',
@@ -17,8 +16,6 @@ exports.getProducts = (req, res, next) => {
 
 exports.getProduct = (req, res, next) => {
   const { productId } = req.params;
-
-  console.log('getProduct', { productId, params: req.params });
 
   Product.findById(productId)
     .then((product) => {

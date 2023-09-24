@@ -27,7 +27,6 @@ class Product {
       .find()
       .toArray()
       .then((products) => {
-        console.log({ products });
         return products;
       })
       .catch((err) => console.log(err));
@@ -40,7 +39,6 @@ class Product {
       .find({ _id: new ObjectId(productId) })
       .next()
       .then((product) => {
-        console.log('findById', { product });
         return product;
       })
       .catch((err) => console.log(err));
