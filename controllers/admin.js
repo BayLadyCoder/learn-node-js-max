@@ -46,7 +46,13 @@ exports.getProducts = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const { title, imageUrl, description, price } = req.body;
-  const product = new Product({ title, imageUrl, description, price });
+  const product = new Product({
+    title,
+    imageUrl,
+    description,
+    price,
+    userId: req.user._id,
+  });
 
   // Sequelize adds special methods like
   // depending on the association/relations we added
