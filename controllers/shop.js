@@ -58,43 +58,18 @@ exports.getIndex = (req, res, next) => {
 //     .catch((err) => console.log(err));
 // };
 
-// exports.postCart = (req, res, next) => {
-//   const { productId } = req.body;
-//   let fetchedCart;
-//   let newQuantity = 1;
+exports.postCart = (req, res, next) => {
+  const { productId } = req.body;
 
-//   req.user
-//     .getCart()
-//     .then((cart) => {
-//       fetchedCart = cart;
-//       return cart.getProducts({ where: { id: productId } });
-//     })
-//     .then((products) => {
-//       let product;
-
-//       // if the product exists in the database
-//       if (products.length > 0) {
-//         product = products[0];
-//         const oldQuantity = product.cartItem.quantity;
-//         newQuantity = oldQuantity + 1;
-//         return product;
-//       }
-
-//       // add new product and set quantity to 1
-//       return Product.findByPk(productId).then((product) => {
-//         return product;
-//       });
-//     })
-//     .then((product) => {
-//       return fetchedCart.addProduct(product, {
-//         through: { quantity: newQuantity },
-//       });
-//     })
-//     .then(() => {
-//       res.redirect('/cart');
-//     })
-//     .catch((err) => console.log(err));
-// };
+  Product.findById(productId)
+    .then((product) => {
+      return req.user.addToCart(product);
+    })
+    .then((result) => {
+      console.log('postCart result', result);
+      res.redirect('/cart');
+    });
+};
 
 // exports.postOrder = (req, res, next) => {
 //   let fetchedCart;
