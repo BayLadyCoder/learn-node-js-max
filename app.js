@@ -27,7 +27,7 @@ app.use((req, res, next) => {
   const bayUserId = '650fbb39922c7c6a4aa3b91c';
   User.findById(bayUserId)
     .then((user) => {
-      req.user = user;
+      req.user = new User(user.name, user.email, user.cart, user.id);
       next();
     })
     .catch((err) => console.log(err));
