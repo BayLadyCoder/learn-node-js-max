@@ -5,7 +5,7 @@ class User {
   constructor(username, email, cart, id) {
     this.username = username;
     this.email = email;
-    this.cart = cart; // {items: []}
+    this.cart = cart;
     this._id = id;
   }
 
@@ -18,8 +18,9 @@ class User {
     // const cartProduct = this.cart.items.findIndex((cProduct) => {
     //   return cProduct.id === product.id;
     // });
-
-    const updatedCart = { items: [{ ...product, quantity: 1 }] };
+    const updatedCart = {
+      items: [{ productId: new ObjectId(product.id), quantity: 1 }],
+    };
     const db = getDb();
     return db.collection('users').updateOne(
       { _id: new ObjectId(this._id) },
