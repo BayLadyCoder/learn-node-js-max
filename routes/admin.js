@@ -7,22 +7,22 @@ const router = express.Router();
 
 // use `router` instead of `app`, and we can use it as a middleware in app.js
 // GET /admin/add-product
-router.get('/add-product', adminController.getAddProduct);
+// router.get('/add-product', adminController.getAddProduct);
 
-// GET /admin/edit-product
-router.get('/edit-product/:productId', adminController.getEditProduct);
+// // GET /admin/edit-product
+// router.get('/edit-product/:productId', adminController.getEditProduct);
 
-// GET /admin/products
-router.get('/products', adminController.getProducts);
+// // GET /admin/products
+// router.get('/products', adminController.getProducts);
 
-// POST /admin/add-product
-router.post('/add-product', adminController.postAddProduct);
+// // POST /admin/add-product
+// router.post('/add-product', adminController.postAddProduct);
 
-// POST /admin/edit-product
-router.post('/edit-product', adminController.postEditProduct);
+// // POST /admin/edit-product
+// router.post('/edit-product', adminController.postEditProduct);
 
-// POST /admin/products
-router.post('/delete-product/', adminController.postDeleteProduct);
+// // POST /admin/products
+// router.post('/delete-product/', adminController.postDeleteProduct);
 
 // export default value
 module.exports = router;
