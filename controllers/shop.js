@@ -40,23 +40,18 @@ exports.getIndex = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-// exports.getCart = (req, res, next) => {
-//   req.user
-//     .getCart()
-//     .then((cart) => {
-//       cart
-//         .getProducts()
-//         .then((products) => {
-//           res.render('shop/cart', {
-//             path: '/cart',
-//             pageTitle: 'Your Cart',
-//             products,
-//           });
-//         })
-//         .catch((err) => console.log(err));
-//     })
-//     .catch((err) => console.log(err));
-// };
+exports.getCart = (req, res, next) => {
+  req.user
+    .getCart()
+    .then((products) => {
+      res.render('shop/cart', {
+        path: '/cart',
+        pageTitle: 'Your Cart',
+        products,
+      });
+    })
+    .catch((err) => console.log(err));
+};
 
 exports.postCart = (req, res, next) => {
   const { productId } = req.body;
@@ -66,7 +61,6 @@ exports.postCart = (req, res, next) => {
       return req.user.addToCart(product);
     })
     .then((result) => {
-      console.log('postCart result', result);
       res.redirect('/cart');
     });
 };
