@@ -64,16 +64,15 @@ exports.postAddProduct = (req, res, next) => {
 
 exports.postEditProduct = (req, res, next) => {
   const { id, title, imageUrl, description, price } = req.body;
-  const product = new Product({
-    id,
-    title,
-    imageUrl,
-    description,
-    price,
-  });
 
-  return product
-    .save()
+  Product.findById(id)
+    .then((product) => {
+      product.title = title;
+      product.imageUrl = imageUrl;
+      product.description = description;
+      product.price = price;
+      return product.save();
+    })
     .then((result) => {
       res.redirect('/admin/products');
     })
