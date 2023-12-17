@@ -24,6 +24,11 @@ const getDb = () => {
   throw 'No database found!';
 };
 
+// use this code in app.js
+// mongoConnect(() => {
+//   app.listen(3000);
+// });
+
 module.exports = { mongoConnect, getDb };
 
 // this code below is from mongodb website

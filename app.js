@@ -1,12 +1,12 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const adminRoute = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const errorController = require('./controllers/error');
 
-const { mongoConnect } = require('./utils/database');
 const User = require('./models/user');
 
 const app = express();
@@ -38,6 +38,16 @@ app.use(shopRoutes);
 
 app.use('/', errorController.get404);
 
-mongoConnect(() => {
-  app.listen(3000);
-});
+mongoose
+  .connect(
+    'mongodb+srv://rachadabayc:oVS2JvvnG5k0eQ7p@cluster0.bhlelx4.mongodb.net/?retryWrites=true&w=majority'
+  )
+  .then((result) => {
+    console.log('database connected');
+    app.listen(3000, () => {
+      console.log('listening to port 3000');
+    });
+  })
+  .catch((err) => {
+    console.log('mongoose connection error: ', err);
+  });
