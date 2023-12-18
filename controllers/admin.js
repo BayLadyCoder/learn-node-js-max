@@ -34,7 +34,10 @@ exports.getEditProduct = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => {
   Product.find()
+    // .select('title price -_id') // manually select fields (title price) or explicitly exclude field (-_id)
+    // .populate('userId', 'name') // get hydrated User by userId and select only name field
     .then((products) => {
+      console.log({ products, userId: products[0].userId });
       res.render('admin/products', {
         products,
         path: '/admin/products',
