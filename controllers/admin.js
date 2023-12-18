@@ -51,7 +51,7 @@ exports.postAddProduct = (req, res, next) => {
     imageUrl,
     description,
     price,
-    // userId: req.user._id,
+    userId: req.user._id, // can also use just req.user, mongoose will only select the id from user
   });
 
   product
