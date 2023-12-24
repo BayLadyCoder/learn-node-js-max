@@ -2,6 +2,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const session = require('express-session');
 
 const adminRoute = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -22,6 +23,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // serves static files such as css, image, js files that we allow users to access them in the frontend
 app.use(express.static(path.join(__dirname, 'public')));
+
+// initialize and configure session middleware
+// https://expressjs.com/en/resources/middleware/session.html
+app.use(
+  session({
+    secret: 'this should be a long string value',
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 // this runs when there is an incoming request
 // it always runs after app started,
