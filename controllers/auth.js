@@ -39,3 +39,26 @@ exports.getSignup = (req, res, next) => {
     isAuthenticated: false,
   });
 };
+
+exports.postSignup = (req, res, next) => {
+  const { email, password, confirmPassword } = req.body;
+  // todo: will add validation and error message later
+
+  User.findOne({ email })
+    .then((userDoc) => {
+      if (userDoc) {
+        return res.redirect('/signup');
+      }
+
+      const user = new User({
+        email,
+        password,
+      });
+
+      return user.save().then((result) => {
+        res.redirect('/login');
+      });
+    })
+
+    .catch((err) => console.log(err));
+};
