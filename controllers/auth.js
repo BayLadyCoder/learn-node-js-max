@@ -53,18 +53,19 @@ exports.postSignup = (req, res, next) => {
       }
 
       const salt = 12;
-      return bcrypt.hash(password, salt);
-    })
-    .then((hashedPassword) => {
-      const user = new User({
-        email,
-        password: hashedPassword,
-      });
+      return bcrypt
+        .hash(password, salt)
+        .then((hashedPassword) => {
+          const user = new User({
+            email,
+            password: hashedPassword,
+          });
 
-      return user.save().then((result) => {
-        res.redirect('/login');
-      });
+          return user.save();
+        })
+        .then(() => {
+          res.redirect('/login');
+        });
     })
-
     .catch((err) => console.log(err));
 };
