@@ -68,18 +68,6 @@ app.use('/', errorController.get404);
 mongoose
   .connect(MONGODB_URI)
   .then((result) => {
-    // automatically add a user if there is none (temp)
-    User.findOne().then((user) => {
-      if (!user) {
-        const user = new User({
-          name: 'Bay',
-          email: 'bay@test.com',
-          cart: { items: [] },
-        });
-        user.save();
-      }
-    });
-
     console.log('database connected');
     app.listen(PORT, () => {
       console.log(`listening to port ${PORT}`);
