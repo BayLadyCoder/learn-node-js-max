@@ -3,6 +3,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
+// a MongoDBStore class that can be used to store sessions in MongoDB. https://www.npmjs.com/package/connect-mongodb-session
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 const adminRoute = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -11,8 +13,15 @@ const errorController = require('./controllers/error');
 
 const User = require('./models/user');
 
-const app = express();
 const PORT = 3000;
+const MONGODB_URI =
+  'mongodb+srv://rachadabayc:oVS2JvvnG5k0eQ7p@cluster0.bhlelx4.mongodb.net/?retryWrites=true&w=majority';
+
+const app = express();
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: 'sessions',
+});
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -31,6 +40,7 @@ app.use(
     secret: 'this should be a long string value',
     resave: false,
     saveUninitialized: false,
+    store,
   })
 );
 
@@ -53,9 +63,7 @@ app.use(shopRoutes);
 app.use('/', errorController.get404);
 
 mongoose
-  .connect(
-    'mongodb+srv://rachadabayc:oVS2JvvnG5k0eQ7p@cluster0.bhlelx4.mongodb.net/?retryWrites=true&w=majority'
-  )
+  .connect(MONGODB_URI)
   .then((result) => {
     // automatically add a user if there is none (temp)
     User.findOne().then((user) => {
