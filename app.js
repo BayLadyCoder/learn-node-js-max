@@ -47,8 +47,11 @@ app.use(
 // this runs when there is an incoming request
 // it always runs after app started,
 app.use((req, res, next) => {
-  const bayUserId = '6580a7be8040278aeb070c87';
-  User.findById(bayUserId)
+  if (!req.session.user) {
+    return next();
+  }
+
+  User.findById(req.session.user._id)
     .then((user) => {
       req.user = user;
       next();
