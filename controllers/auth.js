@@ -11,17 +11,30 @@ exports.getLogin = (req, res, next) => {
 };
 
 exports.postLogin = (req, res, next) => {
-  const bayUserId = '6580a7be8040278aeb070c87';
+  const { email, password, confirmPassword } = req.body;
+  // todo: will add validation and error message later
 
-  User.findById(bayUserId)
+  User.findOne({ email })
     .then((user) => {
-      req.session.isLoggedIn = true;
-      req.session.user = user;
+      if (!user) {
+        return res.redirect('/login');
+      }
 
-      // to make sure session is saved before redirect
-      req.session.save((err) => {
-        console.log(err);
-        res.redirect('/');
+      bcrypt.compare(password, user.password).then((doMatch) => {
+        if (doMatch) {
+          req.session.isLoggedIn = true;
+          req.session.user = user;
+
+          // to make sure session is saved before redirect
+          req.session.save((err) => {
+            if (err) {
+              console.log(err);
+            }
+            return res.redirect('/');
+          });
+        } else {
+          res.redirect('/login');
+        }
       });
     })
     .catch((err) => console.log(err));
