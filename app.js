@@ -6,6 +6,7 @@ const session = require('express-session');
 // a MongoDBStore class that can be used to store sessions in MongoDB. https://www.npmjs.com/package/connect-mongodb-session
 const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
+const flash = require('connect-flash');
 
 const adminRoute = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -48,6 +49,9 @@ app.use(
 // csrf middleware must be after session
 // all routes that are not GET are CSRF protected
 app.use(csrfProtection);
+
+// https://www.npmjs.com/package/connect-flash
+app.use(flash());
 
 // this runs when there is an incoming request
 // it always runs after app started,
