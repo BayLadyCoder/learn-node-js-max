@@ -5,12 +5,12 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 // a MongoDBStore class that can be used to store sessions in MongoDB. https://www.npmjs.com/package/connect-mongodb-session
 const MongoDBStore = require('connect-mongodb-session')(session);
+const csrf = require('csurf');
 
 const adminRoute = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 const errorController = require('./controllers/error');
-
 const User = require('./models/user');
 
 const PORT = 3000;
@@ -22,6 +22,7 @@ const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: 'sessions',
 });
+const csrfProtection = csrf();
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -44,6 +45,10 @@ app.use(
   })
 );
 
+// csrf middleware must be after session
+// all routes that are not GET are CSRF protected
+app.use(csrfProtection);
+
 // this runs when there is an incoming request
 // it always runs after app started,
 app.use((req, res, next) => {
@@ -57,6 +62,13 @@ app.use((req, res, next) => {
       next();
     })
     .catch((err) => console.log(err));
+});
+
+app.use((req, res, next) => {
+  // set up local variables for all views
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
 });
 
 app.use('/admin', adminRoute);
