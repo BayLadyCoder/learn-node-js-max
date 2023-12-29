@@ -36,6 +36,7 @@ exports.postLogin = (req, res, next) => {
             return res.redirect('/');
           });
         } else {
+          req.flash('error', 'Invalid email or password');
           res.redirect('/login');
         }
       });
@@ -51,9 +52,12 @@ exports.postLogout = (req, res, next) => {
 };
 
 exports.getSignup = (req, res, next) => {
+  const flashErrorMessageArr = req.flash('error');
+
   res.render('auth/signup', {
     path: '/signup',
     pageTitle: 'Signup',
+    errorMessage: flashErrorMessageArr[0] || null,
   });
 };
 
@@ -64,6 +68,10 @@ exports.postSignup = (req, res, next) => {
   User.findOne({ email })
     .then((userDoc) => {
       if (userDoc) {
+        req.flash(
+          'error',
+          'E-mail is already used. Please pick a different email'
+        );
         return res.redirect('/signup');
       }
 
