@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -15,12 +17,10 @@ const errorController = require('./controllers/error');
 const User = require('./models/user');
 
 const PORT = 3000;
-const MONGODB_URI =
-  'mongodb+srv://rachadabayc:oVS2JvvnG5k0eQ7p@cluster0.bhlelx4.mongodb.net/?retryWrites=true&w=majority';
 
 const app = express();
 const store = new MongoDBStore({
-  uri: MONGODB_URI,
+  uri: process.env.MONGODB_URI,
   collection: 'sessions',
 });
 const csrfProtection = csrf();
@@ -82,7 +82,7 @@ app.use(shopRoutes);
 app.use('/', errorController.get404);
 
 mongoose
-  .connect(MONGODB_URI)
+  .connect(process.env.MONGODB_URI)
   .then((result) => {
     console.log('database connected');
     app.listen(PORT, () => {
