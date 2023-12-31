@@ -1,6 +1,16 @@
 const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
+const sendgridTransport = require('nodemailer-sendgrid-transport');
 
 const User = require('../models/user');
+
+const transporter = nodemailer.createTransport(
+  sendgridTransport({
+    auth: {
+      api_key: process.env.SENDGRID_API_KEY,
+    },
+  })
+);
 
 exports.getLogin = (req, res, next) => {
   const flashErrorMessageArr = req.flash('error');
@@ -88,6 +98,14 @@ exports.postSignup = (req, res, next) => {
         })
         .then(() => {
           res.redirect('/login');
+          transporter
+            .sendMail({
+              to: email,
+              from: process.env.MY_SENDGRID_EMAIL,
+              subject: 'Bay Shop: Signup Succeeded',
+              html: '<h1>You successfully signed up!</h1>',
+            })
+            .catch((err) => console.log(err));
         });
     })
     .catch((err) => console.log(err));
