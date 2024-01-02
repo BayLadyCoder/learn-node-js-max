@@ -134,7 +134,7 @@ exports.postResetPassword = (req, res, next) => {
     User.findOne({ email: req.body.email })
       .then((user) => {
         if (!user) {
-          req.flash('error', '');
+          req.flash('error', 'No account with that email found.');
           return res.redirect('/reset-password');
         }
 
