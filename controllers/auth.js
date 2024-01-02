@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
@@ -118,5 +119,43 @@ exports.getResetPassword = (req, res, next) => {
     path: '/reset-password',
     pageTitle: 'Reset Password',
     errorMessage: flashErrorMessageArr[0] || null,
+  });
+};
+
+exports.postResetPassword = (req, res, next) => {
+  crypto.randomBytes(32, (err, buffer) => {
+    if (err) {
+      console.log(err);
+      return res.redirect('/reset-password');
+    }
+
+    const token = buffer.toString('hex');
+
+    User.findOne({ email: req.body.email })
+      .then((user) => {
+        if (!user) {
+          req.flash('error', '');
+          return res.redirect('/reset-password');
+        }
+
+        user.resetToken = token;
+        user.resetTokenExpiration = Date.now() + 60 * 5 * 1000;
+        return user.save();
+      })
+      .then(() => {
+        res.redirect('/');
+        transporter
+          .sendMail({
+            to: req.body.email,
+            from: process.env.MY_SENDGRID_EMAIL,
+            subject: 'Bay Shop: Password Reset',
+            html: `
+                    <p>You requested a password reset</p>
+                    <p>Click this <a href="http://localhost:3000/reset/${token}">link</a> to reset a new password.</p>
+                  `,
+          })
+          .catch((err) => console.log(err));
+      })
+      .catch((err) => console.log(err));
   });
 };
