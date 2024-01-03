@@ -151,7 +151,7 @@ exports.postResetPassword = (req, res, next) => {
             subject: 'Bay Shop: Password Reset',
             html: `
                     <p>You requested a password reset</p>
-                    <p>Click this <a href="http://localhost:3000/reset/${token}">link</a> to reset a new password.</p>
+                    <p>Click this <a href="http://localhost:3000/reset-password/${token}">link</a> to reset a new password.</p>
                   `,
           })
           .catch((err) => console.log(err));
