@@ -86,9 +86,8 @@ exports.postSignup = (req, res, next) => {
         return res.redirect('/signup');
       }
 
-      const salt = 12;
       return bcrypt
-        .hash(password, salt)
+        .hash(password, Number(process.env.SALT))
         .then((hashedPassword) => {
           const user = new User({
             email,
@@ -174,7 +173,33 @@ exports.getNewPassword = (req, res, next) => {
         pageTitle: 'New Password',
         errorMessage: flashErrorMessageArr[0] || null,
         userId: user._id.toString(),
+        passwordToken: token,
       });
+    })
+    .catch((err) => console.log(err));
+};
+
+exports.postNewPassword = (req, res, next) => {
+  const { password: newPassword, userId, passwordToken } = req.body;
+  let resetUser;
+
+  User.findOne({
+    resetToken: passwordToken,
+    resetTokenExpiration: { $gt: Date.now() },
+    _id: userId,
+  })
+    .then((user) => {
+      resetUser = user;
+      return bcrypt.hash(newPassword, Number(process.env.SALT));
+    })
+    .then((hashedPassword) => {
+      resetUser.password = hashedPassword;
+      resetUser.resetToken = undefined;
+      resetUser.resetTokenExpiration = undefined;
+      return resetUser.save();
+    })
+    .then(() => {
+      res.redirect('/login');
     })
     .catch((err) => console.log(err));
 };
