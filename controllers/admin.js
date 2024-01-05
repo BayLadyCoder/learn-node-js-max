@@ -33,7 +33,7 @@ exports.getEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.find()
+  Product.find({ userId: req.user._id })
     // .select('title price -_id') // manually select fields (title price) or explicitly exclude field (-_id)
     // .populate('userId', 'name') // get hydrated User by userId and select only name field
     .then((products) => {
