@@ -12,7 +12,15 @@ router.get('/reset-password/:token', authController.getNewPassword);
 
 router.post(
   '/signup',
-  check('email').isEmail().withMessage('Invalid email.'),
+  check('email')
+    .isEmail()
+    .withMessage('Invalid email.')
+    .custom((value, { req }) => {
+      if (value === 'forbidden@test.com') {
+        throw new Error('This email address is forbidden.');
+      }
+      return true;
+    }),
   authController.postSignup
 );
 router.post('/login', authController.postLogin);
