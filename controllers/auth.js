@@ -74,7 +74,7 @@ exports.getSignup = (req, res, next) => {
 };
 
 exports.postSignup = (req, res, next) => {
-  const { email, password, confirmPassword } = req.body;
+  const { email, password } = req.body;
   const errors = validationResult(req, res);
 
   if (!errors.isEmpty()) {
@@ -85,37 +85,24 @@ exports.postSignup = (req, res, next) => {
     });
   }
 
-  User.findOne({ email })
-    .then((userDoc) => {
-      if (userDoc) {
-        req.flash(
-          'error',
-          'E-mail is already used. Please pick a different email'
-        );
-        return res.redirect('/signup');
-      }
+  bcrypt
+    .hash(password, Number(process.env.SALT))
+    .then((hashedPassword) => {
+      const user = new User({
+        email,
+        password: hashedPassword,
+      });
 
-      return bcrypt
-        .hash(password, Number(process.env.SALT))
-        .then((hashedPassword) => {
-          const user = new User({
-            email,
-            password: hashedPassword,
-          });
-
-          return user.save();
-        })
-        .then(() => {
-          res.redirect('/login');
-          transporter
-            .sendMail({
-              to: email,
-              from: process.env.MY_SENDGRID_EMAIL,
-              subject: 'Bay Shop: Signup Succeeded',
-              html: '<h1>You successfully signed up!</h1>',
-            })
-            .catch((err) => console.log(err));
-        });
+      return user.save();
+    })
+    .then(() => {
+      res.redirect('/login');
+      return transporter.sendMail({
+        to: email,
+        from: process.env.MY_SENDGRID_EMAIL,
+        subject: 'Bay Shop: Signup Succeeded',
+        html: '<h1>You successfully signed up!</h1>',
+      });
     })
     .catch((err) => console.log(err));
 };
