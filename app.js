@@ -53,6 +53,13 @@ app.use(csrfProtection);
 // https://www.npmjs.com/package/connect-flash
 app.use(flash());
 
+app.use((req, res, next) => {
+  // set up local variables for all views
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
 // this runs when there is an incoming request
 // it always runs after app started,
 app.use((req, res, next) => {
@@ -71,15 +78,10 @@ app.use((req, res, next) => {
     })
     .catch((err) => {
       // having issue connecting with the database
-      throw new Error(err);
+      const error = new Error(err.message);
+      error.httpStatusCode = 500;
+      return next(error);
     });
-});
-
-app.use((req, res, next) => {
-  // set up local variables for all views
-  res.locals.isAuthenticated = req.session.isLoggedIn;
-  res.locals.csrfToken = req.csrfToken();
-  next();
 });
 
 app.use('/admin', adminRoute);
@@ -94,7 +96,10 @@ app.use((error, req, res, next) => {
   console.log(error);
   // or log to sentry
   // or res.status(error.httpStatusCode).render(...)
-  res.redirect('/500');
+  res.status(500).render('500', {
+    pageTitle: 'Error!',
+    path: '/500',
+  });
 });
 
 mongoose
