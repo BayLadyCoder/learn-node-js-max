@@ -9,6 +9,7 @@ const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const flash = require('connect-flash');
+const multer = require('multer');
 
 const adminRoute = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -31,6 +32,8 @@ app.set('views', 'views');
 // Parse incoming request bodies in a middleware before your handlers,
 // available under the req.body property
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(multer({ dest: 'images' }).single('image'));
 
 // serves static files such as css, image, js files that we allow users to access them in the frontend
 app.use(express.static(path.join(__dirname, 'public')));
