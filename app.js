@@ -86,6 +86,8 @@ app.use('/admin', adminRoute);
 app.use(authRoutes);
 app.use(shopRoutes);
 
+app.get('/500', errorController.get500);
+
 app.use('/', errorController.get404);
 
 mongoose
