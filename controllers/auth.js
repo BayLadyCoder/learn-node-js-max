@@ -70,11 +70,12 @@ exports.getSignup = (req, res, next) => {
     path: '/signup',
     pageTitle: 'Signup',
     errorMessage: flashErrorMessageArr[0] || null,
+    oldInput: { email: '', password: '', confirmPassword: '' },
   });
 };
 
 exports.postSignup = (req, res, next) => {
-  const { email, password } = req.body;
+  const { email, password, confirmPassword } = req.body;
   const errors = validationResult(req, res);
 
   if (!errors.isEmpty()) {
@@ -82,6 +83,7 @@ exports.postSignup = (req, res, next) => {
       path: '/signup',
       pageTitle: 'Signup',
       errorMessage: errors.array()[0].msg,
+      oldInput: { email, password, confirmPassword },
     });
   }
 
