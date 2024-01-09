@@ -30,14 +30,17 @@ router.post(
             );
           }
         });
-      }),
+      })
+      .normalizeEmail(),
     body(
       'password',
       'Please enter a password contains at least 5 characters with only numbers and text.'
     )
       .isLength({ min: 5 })
-      .isAlphanumeric(),
+      .isAlphanumeric()
+      .trim(),
     body('confirmPassword')
+      .trim()
       .custom((value, { req }) => {
         if (value !== req.body.password) {
           throw new Error('Password have to match.');
@@ -49,7 +52,11 @@ router.post(
   ],
   authController.postSignup
 );
-router.post('/login', authController.postLogin);
+router.post(
+  '/login',
+  [body('email').normalizeEmail(), body('password').trim()],
+  authController.postLogin
+);
 router.post('/logout', authController.postLogout);
 router.post('/reset-password', authController.postResetPassword);
 router.post('/new-password', authController.postNewPassword);
