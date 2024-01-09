@@ -15,24 +15,26 @@ const transporter = nodemailer.createTransport(
 );
 
 exports.getLogin = (req, res, next) => {
-  const flashErrorMessageArr = req.flash('error');
-
   res.render('auth/login', {
     path: '/login',
     pageTitle: 'Login',
-    errorMessage: flashErrorMessageArr[0] || null,
+    errorMessage: null,
+    oldInput: { email: '', password: '' },
   });
 };
 
 exports.postLogin = (req, res, next) => {
-  const { email, password, confirmPassword } = req.body;
-  // todo: will add validation and error message later
+  const { email, password } = req.body;
 
   User.findOne({ email })
     .then((user) => {
       if (!user) {
-        req.flash('error', 'Invalid email or password');
-        return res.redirect('/login');
+        return res.status(422).render('auth/login', {
+          path: '/login',
+          pageTitle: 'Login',
+          errorMessage: 'Invalid email or password',
+          oldInput: { email, password },
+        });
       }
 
       bcrypt.compare(password, user.password).then((doMatch) => {
@@ -48,8 +50,12 @@ exports.postLogin = (req, res, next) => {
             return res.redirect('/');
           });
         } else {
-          req.flash('error', 'Invalid email or password');
-          res.redirect('/login');
+          return res.status(422).render('auth/login', {
+            path: '/login',
+            pageTitle: 'Login',
+            errorMessage: 'Invalid email or password',
+            oldInput: { email, password },
+          });
         }
       });
     })
