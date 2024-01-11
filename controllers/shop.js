@@ -177,17 +177,31 @@ exports.getInvoice = (req, res, next) => {
       const invoiceName = 'invoice-' + orderId + '.pdf';
       const invoicePath = path.join(rootDir, 'invoices', invoiceName);
 
-      fs.readFile(invoicePath, (err, data) => {
-        if (err) {
-          return next(err);
-        }
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader(
-          'Content-Disposition',
-          'attachment; filename="' + invoiceName + '"'
-        );
-        res.send(data);
-      });
+      // ! read file to the memory first, then send it, not efficient for large files
+      // fs.readFile(invoicePath, (err, data) => {
+      //   if (err) {
+      //     return next(err);
+      //   }
+      //   res.setHeader('Content-Type', 'application/pdf');
+      //   res.setHeader(
+      //     'Content-Disposition',
+      //     'attachment; filename="' + invoiceName + '"'
+      //   );
+      //   res.send(data);
+      // });
+
+      // streaming response data, read file in chunks
+      const file = fs.createReadStream(invoicePath);
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader(
+        'Content-Disposition',
+        'attachment; filename="' + invoiceName + '"'
+      );
+
+      // readable stream writing to a writable stream
+      // respond object is a writable stream, so we can do this
+      file.pipe(res);
     })
     .catch((err) => {
       next(err);
