@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const PDFDocument = require('pdfkit');
 
 const rootDir = require('../utils/path');
 const Product = require('../models/product');
@@ -177,6 +178,41 @@ exports.getInvoice = (req, res, next) => {
       const invoiceName = 'invoice-' + orderId + '.pdf';
       const invoicePath = path.join(rootDir, 'invoices', invoiceName);
 
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader(
+        'Content-Disposition',
+        'attachment; filename="' + invoiceName + '"'
+      );
+
+      // generating a new pdf file
+      const pdfDoc = new PDFDocument(); // readable stream
+
+      // readable stream writing to writable streams (as local file and res)
+      pdfDoc.pipe(fs.createWriteStream(invoicePath));
+      pdfDoc.pipe(res);
+
+      // writing to pdf
+      pdfDoc.fontSize(24).text('Invoice');
+      pdfDoc
+        .fontSize(20)
+        .text(
+          '----------------------------------------------------------------------'
+        );
+
+      let totalPrice = 0;
+
+      order.products.forEach(({ quantity, product }) => {
+        totalPrice += quantity * product.price;
+        pdfDoc
+          .fontSize(14)
+          .text(`${product.title}: $${product.price} x ${quantity} items`);
+      });
+      pdfDoc.fontSize(20).text(' ');
+      pdfDoc.fontSize(18).text(`Total Price: $${totalPrice}`);
+
+      // done writing to pdf
+      pdfDoc.end();
+
       // ! read file to the memory first, then send it, not efficient for large files
       // fs.readFile(invoicePath, (err, data) => {
       //   if (err) {
@@ -190,18 +226,18 @@ exports.getInvoice = (req, res, next) => {
       //   res.send(data);
       // });
 
-      // streaming response data, read file in chunks
-      const file = fs.createReadStream(invoicePath);
+      // ! streaming response data, read file in chunks
+      // const file = fs.createReadStream(invoicePath);
 
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader(
-        'Content-Disposition',
-        'attachment; filename="' + invoiceName + '"'
-      );
+      // res.setHeader('Content-Type', 'application/pdf');
+      // res.setHeader(
+      //   'Content-Disposition',
+      //   'attachment; filename="' + invoiceName + '"'
+      // );
 
-      // readable stream writing to a writable stream
-      // respond object is a writable stream, so we can do this
-      file.pipe(res);
+      // // readable stream writing to a writable stream
+      // // respond object is a writable stream, so we can do this
+      // file.pipe(res);
     })
     .catch((err) => {
       next(err);
