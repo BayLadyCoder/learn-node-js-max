@@ -9,9 +9,10 @@ router.get('/', shopController.getIndex);
 router.get('/products', shopController.getProducts);
 router.get('/products/:productId([0-9a-fA-F]{24})', shopController.getProduct);
 router.get('/cart', isAuth, shopController.getCart);
-router.post('/cart', isAuth, shopController.postCart);
-// router.get('/checkout', shopController.getCheckout);
+router.get('/orders/:orderId', isAuth, shopController.getInvoice);
 router.get('/orders', isAuth, shopController.getOrders);
+// router.get('/checkout', shopController.getCheckout);
+router.post('/cart', isAuth, shopController.postCart);
 router.post('/create-order', isAuth, shopController.postOrder);
 router.post('/cart-delete-item', isAuth, shopController.postCartDeleteItem);
 
