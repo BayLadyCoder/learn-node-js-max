@@ -56,6 +56,7 @@ app.use(multer({ storage: fileStorage, fileFilter }).single('image'));
 
 // serves static files such as css, image, js files that we allow users to access them in the frontend
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // initialize and configure session middleware, this automatically sets and reads cookies for you
 // https://expressjs.com/en/resources/middleware/session.html
