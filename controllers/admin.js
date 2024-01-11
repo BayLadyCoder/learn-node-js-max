@@ -64,8 +64,25 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.postAddProduct = (req, res, next) => {
-  const { title, imageUrl, description, price } = req.body;
+  const { title, description, price } = req.body;
+  const image = req.file;
   const errors = validationResult(req);
+
+  if (!image) {
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Add Product',
+      path: '/admin/edit-product',
+      editing: false,
+      product: {
+        title,
+        price,
+        description,
+      },
+      hasError: true,
+      errorMessage: 'Attached file is not an image',
+      validationErrors: [],
+    });
+  }
 
   if (!errors.isEmpty()) {
     return res.status(422).render('admin/edit-product', {
@@ -74,7 +91,6 @@ exports.postAddProduct = (req, res, next) => {
       editing: false,
       product: {
         title,
-        imageUrl,
         price,
         description,
       },
@@ -87,7 +103,7 @@ exports.postAddProduct = (req, res, next) => {
   const product = new Product({
     _id: new mongoose.Types.ObjectId('659cc1c1acbd3a928326fc99'),
     title,
-    imageUrl,
+    imageUrl: image.path,
     description,
     price,
     userId: req.user._id, // can also use just req.user, mongoose will only select the id from user
@@ -123,7 +139,8 @@ exports.postAddProduct = (req, res, next) => {
 };
 
 exports.postEditProduct = (req, res, next) => {
-  const { id, title, imageUrl, description, price } = req.body;
+  const { id, title, description, price } = req.body;
+  const image = req.file;
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -134,7 +151,6 @@ exports.postEditProduct = (req, res, next) => {
       product: {
         _id: id,
         title,
-        imageUrl,
         price,
         description,
       },
@@ -151,7 +167,9 @@ exports.postEditProduct = (req, res, next) => {
       }
 
       product.title = title;
-      product.imageUrl = imageUrl;
+      if (image) {
+        product.imageUrl = image.path;
+      }
       product.description = description;
       product.price = price;
 
