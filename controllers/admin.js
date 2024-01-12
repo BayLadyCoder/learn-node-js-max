@@ -102,7 +102,6 @@ exports.postAddProduct = (req, res, next) => {
   }
 
   const product = new Product({
-    _id: new mongoose.Types.ObjectId('659cc1c1acbd3a928326fc99'),
     title,
     imageUrl: image.path,
     description,
