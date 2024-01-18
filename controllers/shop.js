@@ -174,10 +174,26 @@ exports.getOrders = (req, res, next) => {
 };
 
 exports.getCheckout = (req, res, next) => {
-  res.render('shop/checkout', {
-    path: '/checkout',
-    pageTitle: 'Checkout',
-  });
+  req.user
+    .populate('cart.items.productId') // get hydrated product by/in productId
+    .then((user) => {
+      const products = user.cart.items;
+      const totalPrice = products.reduce((total, product) => {
+        total += product.quantity * product.productId.price;
+        return total;
+      }, 0);
+      res.render('shop/checkout', {
+        path: '/checkout',
+        pageTitle: 'Checkout',
+        products,
+        totalPrice,
+      });
+    })
+    .catch((err) => {
+      const error = new Error(err.message);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.postCartDeleteItem = (req, res, next) => {
